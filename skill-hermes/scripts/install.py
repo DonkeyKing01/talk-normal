@@ -90,6 +90,11 @@ def atomic_write(target, content):
 
 
 def main(argv=None):
+    # Windows redirects default to the local code page, while the shared rules
+    # contain Chinese. Emit UTF-8 for both the preview and Unicode target paths.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     scope = parser.add_mutually_exclusive_group()
     scope.add_argument("--workspace", type=Path, help="Project directory (default: current directory).")
